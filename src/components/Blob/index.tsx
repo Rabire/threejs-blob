@@ -4,11 +4,10 @@ import { MathUtils } from "three";
 import fragmentShader from "./fragmentShader";
 import vertexShader from "./vertexShader";
 
-const Blob = () => {
-  const mesh = useRef<THREE.Mesh>(null!);
-  const hover = useRef(false);
+type Props = { loading: boolean; animate: boolean };
 
-  console.log(hover.current);
+const Blob = ({ loading, animate }: Props) => {
+  const mesh = useRef<THREE.Mesh>(null!);
 
   const uniforms = useMemo(
     () => ({
@@ -23,23 +22,23 @@ const Blob = () => {
 
     const materials = mesh.current.material as THREE.ShaderMaterial;
 
-    materials.uniforms.u_time.value = 0.3 * state.clock.getElapsedTime();
+    const speed = loading ? 1.2 : 0.3;
+
+    materials.uniforms.u_time.value = speed * state.clock.getElapsedTime();
 
     materials.uniforms.u_intensity.value = MathUtils.lerp(
       materials.uniforms.u_intensity.value,
-      hover.current ? 1 : 0.15,
+      animate ? 0.6 : 0.15,
       0.02
     );
   });
 
+  const scale = loading ? 1.2 : 1.5;
+
+  // TODO:  Transition
+
   return (
-    <mesh
-      ref={mesh}
-      scale={1.5}
-      position={[0, 0, 0]}
-      onPointerOver={() => (hover.current = true)}
-      onPointerOut={() => (hover.current = false)}
-    >
+    <mesh ref={mesh} scale={scale} position={[0, 0, 0]}>
       <icosahedronBufferGeometry args={[2, 20]} />
       <shaderMaterial
         vertexShader={vertexShader}

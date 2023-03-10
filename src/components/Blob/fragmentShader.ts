@@ -12,5 +12,3 @@ void main() {
 }
 `;
 export default fragmentShader;
-
-// vec3 color = vec3(abs(vUv - 0.5) * 1.0  * (1.0 - distort), 1.0);
