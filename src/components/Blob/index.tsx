@@ -1,6 +1,6 @@
 import { useFrame } from "@react-three/fiber";
 import { useMemo, useRef } from "react";
-import { MathUtils } from "three";
+import { MathUtils, Vector3 } from "three";
 import fragmentShader from "./fragmentShader";
 import vertexShader from "./vertexShader";
 
@@ -32,18 +32,10 @@ const Blob = ({ loading, animate }: Props) => {
       0.02
     );
 
-    // Transition scaling
-    if (loading && mesh.current.scale.x > 1.2)
-      mesh.current.scale.x =
-        mesh.current.scale.y =
-        mesh.current.scale.z -=
-          0.05;
+    const loadingScale = new Vector3(1, 1, 1);
+    const scale = new Vector3(1.5, 1.5, 1.5);
 
-    if (!loading && mesh.current.scale.x < 1.5)
-      mesh.current.scale.x =
-        mesh.current.scale.y =
-        mesh.current.scale.z +=
-          0.05;
+    mesh.current.scale.lerp(loading ? loadingScale : scale, 0.08);
   });
 
   return (
