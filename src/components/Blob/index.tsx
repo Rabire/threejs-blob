@@ -28,17 +28,26 @@ const Blob = ({ loading, animate }: Props) => {
 
     materials.uniforms.u_intensity.value = MathUtils.lerp(
       materials.uniforms.u_intensity.value,
-      animate ? 0.6 : 0.15,
+      animate && !loading ? 0.6 : 0.15,
       0.02
     );
+
+    // Transition scaling
+    if (loading && mesh.current.scale.x > 1.2)
+      mesh.current.scale.x =
+        mesh.current.scale.y =
+        mesh.current.scale.z -=
+          0.05;
+
+    if (!loading && mesh.current.scale.x < 1.5)
+      mesh.current.scale.x =
+        mesh.current.scale.y =
+        mesh.current.scale.z +=
+          0.05;
   });
 
-  const scale = loading ? 1.2 : 1.5;
-
-  // TODO:  Transition
-
   return (
-    <mesh ref={mesh} scale={scale} position={[0, 0, 0]}>
+    <mesh ref={mesh} scale={1.5} position={[0, 0, 0]}>
       <icosahedronBufferGeometry args={[2, 20]} />
       <shaderMaterial
         vertexShader={vertexShader}
